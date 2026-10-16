@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PixelCraft | محرر الصور</title>
+    <meta
+      name="description"
+      content="موقع احترافي لتحرير الصور: رفع صورة، ضبط الإضاءة، التباين، التشبع، التدوير، والتحميل النهائي."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="authModal" class="modal active">
+      <div class="modal-content">
+        <div id="loginForm" class="auth-form active">
+          <div class="auth-header">
+            <div class="brand-icon-auth">P</div>
+            <h1>مرحبا بك في PixelCraft</h1>
+            <p>محرر صور احترافي وسهل الاستخدام</p>
+          </div>
+
+          <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <label for="loginEmail">البريد الإلكتروني</label>
+              <input type="email" id="loginEmail" placeholder="example@email.com" required />
+            </div>
+
+            <div class="form-group">
+              <label for="loginPassword">كلمة المرور</label>
+              <input type="password" id="loginPassword" placeholder="••••••••" required />
+            </div>
+
+            <button type="submit" class="primary-btn full">تسجيل الدخول</button>
+
+            <div class="auth-divider">أو</div>
+
+            <button type="button" class="ghost-btn full" onclick="switchToSignup()">
+              إنشاء حساب جديد
+            </button>
+
+            <div id="loginError" class="error-message"></div>
+          </form>
+        </div>
+
+        <div id="signupForm" class="auth-form">
+          <div class="auth-header">
+            <div class="brand-icon-auth">P</div>
+            <h1>إنشاء حساب جديد</h1>
+            <p>ابدأ بتحرير صورك الآن</p>
+          </div>
+
+          <form onsubmit="handleSignup(event)">
+            <div class="form-group">
+              <label for="signupName">الاسم</label>
+              <input type="text" id="signupName" placeholder="اسمك الكامل" required />
+            </div>
+
+            <div class="form-group">
+              <label for="signupEmail">البريد الإلكتروني</label>
+              <input type="email" id="signupEmail" placeholder="example@email.com" required />
+            </div>
+
+            <div class="form-group">
+              <label for="signupPassword">كلمة المرور</label>
+              <input type="password" id="signupPassword" placeholder="••••••••" minlength="6" required />
+            </div>
+
+            <div class="form-group">
+              <label for="signupConfirm">تأكيد كلمة المرور</label>
+              <input type="password" id="signupConfirm" placeholder="••••••••" minlength="6" required />
+            </div>
+
+            <button type="submit" class="primary-btn full">إنشاء الحساب</button>
+
+            <div class="auth-divider">أو</div>
+
+            <button type="button" class="ghost-btn full" onclick="switchToLogin()">
+              لديك حساب بالفعل؟
+            </button>
+
+            <div id="signupError" class="error-message"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="mainApp" class="page-shell hidden">
+      <header class="topbar">
+        <div class="brand-wrap">
+          <div class="brand-icon">P</div>
+          <div class="brand-text">
+            <span class="brand-name">PixelCraft</span>
+            <span class="brand-tag">محرر صور احترافي</span>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <a href="#editor">المحرر</a>
+          <a href="#features">المزايا</a>
+          <a href="AI">الذكاء الاصطناعي</a>
+        </nav>
+
+        <div class="header-actions">
+          <span class="user-welcome" id="userWelcome"></span>
+          <button class="ghost-btn" onclick="handleLogout()">تسجيل الخروج</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="hero-copy">
+            <span class="mini-badge">أدوات سريعة واحترافية</span>
+            <h1>حرر صورك في دقائق، بدون تعقيد</h1>
+            <p>
+              ارفع صورتك، اضبط الإضاءة والتباين والتشبع، دوّرها، قصها، وحمل
+              النسخة النهائية خلال ثوانٍ فقط.
+            </p>
+
+            <div class="cta-row">
+              <label class="upload-btn" for="imageUpload">رفع صورة</label>
+              <button class="secondary-btn" id="generateSample">تحميل مثال</button>
+            </div>
+
+            <ul class="quick-stats">
+              <li><strong>1.2k+</strong><span>صور تم تعديلها</span></li>
+              <li><strong>5x</strong><span>أسرع من الأدوات التقليدية</span></li>
+              <li><strong>100%</strong><span>سهولة في الاستخدام</span></li>
+            </ul>
+          </div>
+
+          <div class="hero-preview">
+            <div class="preview-card">
+              <div class="preview-header">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <div class="preview-image-wrap">
+                <img
+                  id="heroPreview"
+                  src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80"
+                  alt="عينة صورة"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="editor" class="editor-section">
+          <div class="panel controls-panel">
+            <div class="panel-head">
+              <h2>إعدادات الصورة</h2>
+              <span class="status-dot">جاهز</span>
+            </div>
+
+            <div class="upload-box">
+              <input type="file" id="imageUpload" accept="image/*" hidden />
+              <label for="imageUpload" class="upload-label">
+                <span class="upload-icon">⬆️</span>
+                <strong>اختر صورة</strong>
+                <small>أو اسحبها إلى هنا</small>
+              </label>
+            </div>
+
+            <!-- الفلاتر الجاهزة -->
+            <div class="filters-section">
+              <h3>فلاتر جاهزة</h3>
+              <div class="filters-grid">
+                <button class="filter-btn active" data-filter="none">أصلي</button>
+                <button class="filter-btn" data-filter="grayscale">أبيض وأسود</button>
+                <button class="filter-btn" data-filter="sepia">سيبيا</button>
+                <button class="filter-btn" data-filter="vintage">كلاسيكي</button>
+                <button class="filter-btn" data-filter="noir">نوار</button>
+                <button class="filter-btn" data-filter="warm">دافئ</button>
+                <button class="filter-btn" data-filter="cool">بارد</button>
+                <button class="filter-btn" data-filter="dramatic">درامي</button>
+                <button class="filter-btn" data-filter="faded">باهت</button>
+                <button class="filter-btn" data-filter="vivid">حيوي</button>
+                <button class="filter-btn" data-filter="sunset">غروب</button>
+                <button class="filter-btn" data-filter="ocean">محيط</button>
+                <button class="filter-btn" data-filter="forest">غابة</button>
+                <button class="filter-btn" data-filter="retro">ريترو</button>
+                <button class="filter-btn" data-filter="cinema">سينمائي</button>
+                <button class="filter-btn" data-filter="polaroid">بولارويد</button>
+              </div>
+            </div>
+
+            <div class="controls-group">
+              <div class="control-row">
+                <label for="brightness">الإضاءة</label>
+                <span id="brightnessValue">100%</span>
+              </div>
+              <input id="brightness" type="range" min="0" max="200" value="100" />
+            </div>
+
+            <div class="controls-group">
+              <div class="control-row">
+                <label for="contrast">التباين</label>
+                <span id="contrastValue">100%</span>
+              </div>
+              <input id="contrast" type="range" min="0" max="200" value="100" />
+            </div>
+
+            <div class="controls-group">
+              <div class="control-row">
+                <label for="saturation">التشبع</label>
+                <span id="saturationValue">100%</span>
+              </div>
+              <input id="saturation" type="range" min="0" max="200" value="100" />
+            </div>
+
+            <div class="controls-group">
+              <div class="control-row">
+                <label for="blur">الضبابية</label>
+                <span id="blurValue">0px</span>
+              </div>
+              <input id="blur" type="range" min="0" max="10" value="0" />
+            </div>
+
+            <div class="controls-group">
+              <div class="control-row">
+                <label for="sepia">اللون البني</label>
+                <span id="sepiaValue">0%</span>
+              </div>
+              <input id="sepia" type="range" min="0" max="100" value="0" />
+            </div>
+
+            <div class="controls-group">
+              <div class="control-row">
+                <label for="grayscale">التدرج الرمادي</label>
+                <span id="grayscaleValue">0%</span>
+              </div>
+              <input id="grayscale" type="range" min="0" max="100" value="0" />
+            </div>
+
+            <div class="controls-group">
+              <div class="control-row">
+                <label for="hue">تدوير الألوان</label>
+                <span id="hueValue">0°</span>
+              </div>
+              <input id="hue" type="range" min="0" max="360" value="0" />
+            </div>
+
+            <div class="controls-group split-controls">
+              <div>
+                <label for="rotation">الدوران</label>
+                <input id="rotation" type="range" min="-180" max="180" value="0" />
+              </div>
+              <div>
+                <label for="zoom">التكبير</label>
+                <input id="zoom" type="range" min="50" max="200" value="100" />
+              </div>
+            </div>
+
+            <div class="toggle-row">
+              <label class="switch">
+                <input id="flipX" type="checkbox" />
+                <span class="slider"></span>
+              </label>
+              <span>عكس أفقي</span>
+            </div>
+
+            <div class="toggle-row">
+              <label class="switch">
+                <input id="flipY" type="checkbox" />
+                <span class="slider"></span>
+              </label>
+              <span>عكس عمودي</span>
+            </div>
+
+            <div class="button-stack">
+              <button class="primary-btn full" id="downloadBtn">تحميل الصورة</button>
+              <button class="ghost-btn full" id="resetBtn">إعادة تعيين</button>
+            </div>
+          </div>
+
+          <div class="panel preview-panel">
+            <div class="preview-toolbar">
+              <span class="toolbar-pill">Live preview</span>
+              <span class="toolbar-pill muted" id="imageInfo">لا توجد صورة</span>
+            </div>
+
+            <div class="canvas-stage">
+              <canvas id="editorCanvas" width="900" height="600"></canvas>
+              <div class="empty-state" id="emptyState">
+                <div class="empty-icon">🖼️</div>
+                <h3>ابدأ برفع صورة</h3>
+                <p>اختر صورة من جهازك لتعديلها مباشرة.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="features" class="features-section">
+          <div class="section-head">
+            <span>لماذا PixelCraft؟</span>
+            <h2>واجهة سهلة، أدوات قوية</h2>
+          </div>
+
+          <div class="features-grid">
+            <article class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <h3>تعديل فوري</h3>
+              <p>تغييراتك تظهر مباشرة أثناء تحريك المؤشر.</p>
+            </article>
+
+            <article class="feature-card">
+              <div class="feature-icon">🎨</div>
+              <h3>تحكم متقدم</h3>
+              <p>قم بضبط الإضاءة، التباين، التشبع، التدرج الرمادي، والفلترة.</p>
+            </article>
+
+            <article class="feature-card">
+              <div class="feature-icon">⬇️</div>
+              <h3>تحميل عالي الجودة</h3>
+              <p>حمّل الملف النهائي بصيغة PNG مع جودة عالية.</p>
+            </article>
+          </div>
+        </section>
+
+        <section id="pricing" class="pricing-section">
+          <div class="pricing-card">
+            <div>
+              <span class="mini-badge dark">الخطة المجانية</span>
+              <h3>ابدأ مجانا</h3>
+            </div>
+            
+            </div>
+            <ul>
+              <li>رفع عدد غير محدود من الصور</li>
+              <li>أدوات تعديل أساسية</li>
+              <li>تحميل بصيغة PNG</li>
+            </ul>
+            <button class="primary-btn full">ابدأ الآن</button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <script src="filters.js"></script>
+  </body>
+</html>
